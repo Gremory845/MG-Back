@@ -21,6 +21,13 @@ type Config struct {
 	JWTSecret       []byte
 	AccessTokenTTL  time.Duration
 	RefreshTokenTTL time.Duration
+
+	// Correo (recuperación de contraseña). Si SMTPHost está vacío, el código se imprime en la consola.
+	SMTPHost     string
+	SMTPPort     string
+	SMTPUser     string
+	SMTPPassword string
+	MailFrom     string
 }
 
 func Load() Config {
@@ -48,6 +55,12 @@ func Load() Config {
 		JWTSecret:       []byte(jwtSecret),
 		AccessTokenTTL:  time.Duration(accessMinutes) * time.Minute,
 		RefreshTokenTTL: time.Duration(refreshDays) * 24 * time.Hour,
+
+		SMTPHost:     getEnv("SMTP_HOST", ""),
+		SMTPPort:     getEnv("SMTP_PORT", "587"),
+		SMTPUser:     getEnv("SMTP_USER", ""),
+		SMTPPassword: getEnv("SMTP_PASSWORD", ""),
+		MailFrom:     getEnv("MAIL_FROM", "Musical Game <no-reply@musicalgame.local>"),
 	}
 }
 

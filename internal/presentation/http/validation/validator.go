@@ -35,6 +35,12 @@ func humanMessage(e validator.FieldError) string {
 		return "es demasiado corto"
 	case "max":
 		return "es demasiado largo"
+	case "eqfield":
+		return "no coincide"
+	case "number":
+		return "debe contener solo números"
+	case "len":
+		return "no tiene la longitud correcta"
 	default:
 		return "es inválido"
 	}

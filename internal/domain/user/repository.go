@@ -11,4 +11,5 @@ type UserRepository interface {
 	FindByEmail(ctx context.Context, email string) (*User, error)
 	FindByUsername(ctx context.Context, username string) (*User, error)
 	Save(ctx context.Context, u *User) error
+	UpdatePassword(ctx context.Context, id ID, passwordHash string) error
 }

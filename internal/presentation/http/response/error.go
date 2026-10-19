@@ -15,6 +15,8 @@ var statusByCode = map[string]int{
 	"REFRESH_TOKEN_NOT_FOUND":    http.StatusUnauthorized,
 	"REFRESH_TOKEN_EXPIRED":      http.StatusUnauthorized,
 	"REFRESH_TOKEN_REUSED":       http.StatusUnauthorized,
+	"INVALID_RESET_CODE":         http.StatusBadRequest,
+	"INVALID_RESET_TOKEN":        http.StatusBadRequest,
 	"SCALE_NOT_FOUND":            http.StatusNotFound,
 	"SCALE_DEFINITION_NOT_FOUND": http.StatusNotFound,
 	"LEVEL_NOT_FOUND":            http.StatusNotFound,

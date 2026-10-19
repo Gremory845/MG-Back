@@ -54,6 +54,19 @@ func (r *UserRepository) findOne(ctx context.Context, query string, arg interfac
 	return &u, nil
 }
 
+func (r *UserRepository) UpdatePassword(ctx context.Context, id user.ID, passwordHash string) error {
+	tag, err := r.pool.Exec(ctx, `
+		UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1
+	`, id, passwordHash)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return user.ErrUserNotFound
+	}
+	return nil
+}
+
 func (r *UserRepository) Save(ctx context.Context, u *user.User) error {
 	_, err := r.pool.Exec(ctx, `
 		INSERT INTO users (id, email, username, password_hash, is_active, created_at, updated_at)

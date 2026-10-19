@@ -36,11 +36,11 @@ func NewLoginUseCase(
 }
 
 func (uc *LoginUseCase) Execute(ctx context.Context, input LoginInput) (*LoginOutput, error) {
-	u, err := uc.users.FindByEmail(ctx, input.Email)
+	u, err := uc.users.FindByUsername(ctx, input.Username)
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			// Mismo error que una contraseña incorrecta: no revelamos
-			// si el email existe o no.
+			// si el usuario existe o no.
 			return nil, user.ErrInvalidCredentials
 		}
 		return nil, err

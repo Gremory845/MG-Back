@@ -12,6 +12,7 @@ import (
 
 func NewRouter(
 	authHandler *handlers.AuthHandler,
+	passwordResetHandler *handlers.PasswordResetHandler,
 	scaleHandler *handlers.ScaleHandler,
 	gameHandler *handlers.GameHandler,
 	leaderboardHandler *handlers.LeaderboardHandler,
@@ -25,6 +26,9 @@ func NewRouter(
 		r.Post("/register", authHandler.Register)
 		r.Post("/login", authHandler.Login)
 		r.Post("/refresh", authHandler.Refresh)
+		r.Post("/forgot-password", passwordResetHandler.Forgot)
+		r.Post("/verify-reset-code", passwordResetHandler.VerifyCode)
+		r.Post("/reset-password", passwordResetHandler.Reset)
 	})
 
 	// Catálogo de juego: lectura pública
