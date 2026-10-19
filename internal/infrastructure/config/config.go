@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"net/url"
 
 	"github.com/joho/godotenv"
 )
@@ -50,7 +51,7 @@ func Load() Config {
 		DBHost:     getEnv("DB_HOST", "127.0.0.1"),
 		DBPort:     getEnv("DB_PORT", "5432"),
 		DBName:     getEnv("DB_NAME", "musical_game"),
-		ServerPort: getEnv("SERVER_PORT", "8080"),
+		ServerPort: getEnv("PORT", getEnv("SERVER_PORT", "8080")),
 
 		JWTSecret:       []byte(jwtSecret),
 		AccessTokenTTL:  time.Duration(accessMinutes) * time.Minute,
@@ -64,12 +65,28 @@ func Load() Config {
 	}
 }
 
+
 func (c Config) DatabaseURL() string {
-	return fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		c.DBUser, c.DBPassword, c.DBHost, c.DBPort, c.DBName,
-	)
+	// En producción, usar directamente la conexión proporcionada por Neon.
+	if databaseURL := os.Getenv("DATABASE_URL"); databaseURL != "" {
+		return databaseURL
+	}
+
+	// En desarrollo, construir la conexión con las variables locales.
+	u := &url.URL{
+		Scheme: "postgres",
+		User:   url.UserPassword(c.DBUser, c.DBPassword),
+		Host:   fmt.Sprintf("%s:%s", c.DBHost, c.DBPort),
+		Path:   c.DBName,
+	}
+
+	query := url.Values{}
+	query.Set("sslmode", "disable")
+	u.RawQuery = query.Encode()
+
+	return u.String()
 }
+
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
