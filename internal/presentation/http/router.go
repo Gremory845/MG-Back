@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 
 	"mg-back/internal/presentation/http/handlers"
 	"mg-back/internal/presentation/http/middleware"
@@ -19,6 +20,25 @@ func NewRouter(
 	jwtSecret []byte,
 ) *chi.Mux {
 	r := chi.NewRouter()
+
+	r.Use(cors.Handler(cors.Options{
+    AllowedOrigins: []string{
+        "https://musicalgame.netlify.app",
+        "http://localhost:5173",
+    },
+    AllowedMethods: []string{
+        "GET",
+        "POST",
+        "OPTIONS",
+    },
+    AllowedHeaders: []string{
+        "Accept",
+        "Authorization",
+        "Content-Type",
+    },
+    AllowCredentials: false,
+    MaxAge: 300,
+	}))
 
 	r.Get("/health", healthCheck)
 
