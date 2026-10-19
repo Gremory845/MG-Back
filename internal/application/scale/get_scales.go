@@ -26,6 +26,8 @@ func (uc *GetScalesUseCase) Execute(ctx context.Context) ([]ScaleSummary, error)
 			ID:         s.ID,
 			Name:       s.Name,
 			Difficulty: s.Difficulty,
+			Category:   s.Category,
+			Family:     s.Family,
 		})
 	}
 	return out, nil

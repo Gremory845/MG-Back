@@ -40,12 +40,13 @@ func main() {
 	refreshUC := auth.NewRefreshTokenUseCase(refreshTokenRepo, cfg.JWTSecret, cfg.AccessTokenTTL, cfg.RefreshTokenTTL)
 	getScalesUC := scale.NewGetScalesUseCase(scaleRepo)
 	getLevelUC := scale.NewGetLevelUseCase(levelRepo)
+	getScaleLevelsUC := scale.NewGetScaleLevelsUseCase(scaleRepo, levelRepo)
 	submitAttemptUC := game.NewSubmitAttemptUseCase(levelRepo, gameAttemptRepo)
 	getLeaderboardUC := leaderboard.NewGetLeaderboardUseCase(leaderboardRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(registerUC, loginUC, refreshUC)
-	scaleHandler := handlers.NewScaleHandler(getScalesUC, getLevelUC)
+	scaleHandler := handlers.NewScaleHandler(getScalesUC, getLevelUC, getScaleLevelsUC)
 	gameHandler := handlers.NewGameHandler(submitAttemptUC)
 	leaderboardHandler := handlers.NewLeaderboardHandler(getLeaderboardUC)
 

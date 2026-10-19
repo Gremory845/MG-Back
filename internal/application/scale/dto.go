@@ -4,6 +4,8 @@ type ScaleSummary struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
 	Difficulty int    `json:"difficulty"`
+	Category   string `json:"category"`
+	Family     string `json:"family"`
 }
 
 type LevelNoteOutput struct {

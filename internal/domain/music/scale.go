@@ -17,6 +17,8 @@ type Scale struct {
 	RootPitchClass    int // 0-11
 	Name              string
 	Difficulty        int
+	Category          string // "MAJOR" | "MINOR"
+	Family            string // "NATURAL" | "HARMONIC" | "MELODIC"
 }
 
 // Level es un nivel dentro de una escala (ej. C Major - Level 1).

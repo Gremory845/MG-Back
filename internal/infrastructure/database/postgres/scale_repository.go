@@ -20,10 +20,11 @@ func NewScaleRepository(pool *pgxpool.Pool) *ScaleRepository {
 
 func (r *ScaleRepository) FindAll(ctx context.Context) ([]music.Scale, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT id, scale_definition_id, root_pitch_class, name, difficulty
-		FROM scales
-		WHERE is_active = TRUE
-		ORDER BY difficulty, name
+		SELECT s.id, s.scale_definition_id, s.root_pitch_class, s.name, s.difficulty, d.category, d.family
+		FROM scales s
+		JOIN scale_definitions d ON d.id = s.scale_definition_id
+		WHERE s.is_active = TRUE
+		ORDER BY s.difficulty, s.name
 	`)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (r *ScaleRepository) FindAll(ctx context.Context) ([]music.Scale, error) {
 	var scales []music.Scale
 	for rows.Next() {
 		var s music.Scale
-		if err := rows.Scan(&s.ID, &s.ScaleDefinitionID, &s.RootPitchClass, &s.Name, &s.Difficulty); err != nil {
+		if err := rows.Scan(&s.ID, &s.ScaleDefinitionID, &s.RootPitchClass, &s.Name, &s.Difficulty, &s.Category, &s.Family); err != nil {
 			return nil, err
 		}
 		scales = append(scales, s)
@@ -43,12 +44,14 @@ func (r *ScaleRepository) FindAll(ctx context.Context) ([]music.Scale, error) {
 
 func (r *ScaleRepository) FindByID(ctx context.Context, id string) (*music.Scale, error) {
 	row := r.pool.QueryRow(ctx, `
-		SELECT id, scale_definition_id, root_pitch_class, name, difficulty
-		FROM scales WHERE id = $1
+		SELECT s.id, s.scale_definition_id, s.root_pitch_class, s.name, s.difficulty, d.category, d.family
+		FROM scales s
+		JOIN scale_definitions d ON d.id = s.scale_definition_id
+		WHERE s.id = $1
 	`, id)
 
 	var s music.Scale
-	if err := row.Scan(&s.ID, &s.ScaleDefinitionID, &s.RootPitchClass, &s.Name, &s.Difficulty); err != nil {
+	if err := row.Scan(&s.ID, &s.ScaleDefinitionID, &s.RootPitchClass, &s.Name, &s.Difficulty, &s.Category, &s.Family); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, music.ErrScaleNotFound
 		}

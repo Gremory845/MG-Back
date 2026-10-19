@@ -16,6 +16,8 @@ type LevelSummary struct {
 type ScaleLevelsOutput struct {
 	ScaleID   string         `json:"scale_id"`
 	ScaleName string         `json:"scale_name"`
+	Category  string         `json:"category"`
+	Family    string         `json:"family"`
 	Levels    []LevelSummary `json:"levels"`
 }
 
@@ -39,7 +41,7 @@ func (uc *GetScaleLevelsUseCase) Execute(ctx context.Context, scaleID string) (*
 		return nil, err
 	}
 
-	out := &ScaleLevelsOutput{ScaleID: sc.ID, ScaleName: sc.Name, Levels: make([]LevelSummary, 0, len(levels))}
+	out := &ScaleLevelsOutput{ScaleID: sc.ID, ScaleName: sc.Name, Category: sc.Category, Family: sc.Family, Levels: make([]LevelSummary, 0, len(levels))}
 	for _, l := range levels {
 		out.Levels = append(out.Levels, LevelSummary{
 			ID:               l.ID,
